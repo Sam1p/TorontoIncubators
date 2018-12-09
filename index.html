@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+            <meta name="author" content="Sam Ip (samuel.s.ip@gmail.com)">
+            <meta name="description" content="Toronto Technology Incubators">
+            <title> Technology Incubators in Toronto </title>
+            
+            <!-- bootstrap framework -->
+            <!-- Latest compiled and minified CSS -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+            <!-- jQuery library -->
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+            <!-- Latest compiled JavaScript -->
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+            <!-- Bing Maps Setup, see: https://www.bing.com/api/maps/sdkrelease/mapcontrol/isdk/loadmapasync#HTML --> 
+            <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=AvNOxW-x2DFYFSxD861z8P_tIGt3vTmNmEt9EK2EJJgXOnqFiKyAwdQ6m0H7M9DI'></script>
+            <script type='text/javascript'>
+                    var map;
+                    var credentials = "AvNOxW-x2DFYFSxD861z8P_tIGt3vTmNmEt9EK2EJJgXOnqFiKyAwdQ6m0H7M9DI"; 
+
+                    function loadMapScenario() {
+
+                        // Define address on which to centre the map
+                        var addressLine = "297 Broadway Ave"; // Street Address
+                        var locality = "North York"; // City or town name
+                        var country = "Canada"; // Country
+                        var postcalCode = "M4P1W2"; // Postcal code
+
+                        // Construct request to REST geocode service
+                        var geocodeRequest = "http://dev.virtualearth.net/REST/v1/Locations" 
+                           + "?countryRegion=" + country
+                           + "&addressLine=" + addressLine
+                           + "&locality=" + locality
+                           + "&adminDistrict=" + adminDistrict
+                           + "&postalCode=" + postalCode
+                           + "&key=" + credentials
+                           + "&jsonp=GeocodeCallback"; // This function will be called after the geocode service returns its results
+
+                        // Call the service
+                        CallRestService(geocodeRequest);
+                    }
+
+                    function GeocodeCallback(result) {
+                        // Check that we have a valid response
+                        if (result && result.resourceSets && result.resourceSets.length > 0 && result.resourceSets[0].resources && result.resourceSets[0].resources.length > 0) {
+                            // Create a Location based on the geocoded coordinates
+                            var coords = result.resourceSets[0].resources[0].point.coordinates;
+                            centerPoint = new Microsoft.Maps.Location(coords[0], coords[1]);
+                    
+                            // Create a map centred on the location
+                            map = new Microsoft.Maps.Map(document.getElementById("myMap"),
+                                        { credentials: credentials,
+                                            center: centerPoint,
+                                            mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+                                            zoom: 18
+                                        });
+          
+                            // Add a pushpin as well
+                            var pushpin = new Microsoft.Maps.Pushpin(map.getCenter());
+                            map.entities.push(pushpin);
+                        }
+                    }
+
+                     // This is a generic function to call a REST service and insert the JSON
+                    // results into the head of the document
+                    function CallRestService(request) {
+                        var script = document.createElement("script");
+                        script.setAttribute("type", "text/javascript");
+                        script.setAttribute("src", request);
+                        var dochead = document.getElementsByTagName("head").item(0);
+                        dochead.appendChild(script);
+                    }  
+            </script>
+    </head>
+    <body onload='loadMapScenario()'>      
+        <!-- (1) Add 297 Broadway Ave. by address first; (2) read CSV file second; (3) combine -->  
+        <h1> Toronto Technology Incubators </h1>
+        <h5> Source: Toronto Open Data, as of Dec. 5th, 2018 </h5>
+
+        <!-- Display Map -->
+        <div id='printoutPanel'></div>
+        <div id='myMap' style='width: 100vw; height: 100vh;'></div>
+          
+   </body>
+</html>

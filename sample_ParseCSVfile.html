@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+    <title>CSV Sample Parser - Sam Experiment</title>
+    <script src="js/jquery-3.3.1.min.js"></script>
+	<script src="js/papaparse.min.js"></script>
+</head>
+<body>
+    <script type = "text/javascript">
+        var csvFile = "BusinessEcosystem.csv";
+        var PapaParseDefaultConfig = {
+            delimiter: "",	// auto-detect
+            newline: "",	// auto-detect
+            quoteChar: '"',
+            escapeChar: '"',
+            header: false,
+            transformHeader: undefined,
+            dynamicTyping: false,
+            preview: 0,
+            encoding: "",
+            worker: false,
+            comments: false,
+            step: undefined,
+            complete: function(results, file) {
+                    console.log("Parsing complete:", results, file);
+                },
+            error: undefined,
+            download: false,
+            skipEmptyLines: false,
+            chunk: undefined,
+            fastMode: undefined,
+            beforeFirstChunk: undefined,
+            withCredentials: undefined,
+            transform: undefined
+        };
+        Papa.parse(csvFile, { download: true, PapaParseDefaultConfig});
+    </script>
+</body>
+</html>
